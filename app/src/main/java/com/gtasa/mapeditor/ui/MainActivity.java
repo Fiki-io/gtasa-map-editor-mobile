@@ -152,15 +152,16 @@ public class MainActivity extends AppCompatActivity {
                 texturePackReader = new TexturePackReader(tpkFile, new File(appStorageDir, "textures"));
                 texturePackReader.open();
 
-                // 4. Check for gta3.img
+                // 4. Check for gta3.img and gta_int.img
+                imgArchive = new IMGArchive();
+
                 File gta3Img = new File(gameDataDir, "texdb/gta3.img");
-                if (!gta3Img.exists()) {
-                    gta3Img = new File(appStorageDir, "gta3.img");
-                }
-                if (gta3Img.exists()) {
-                    imgArchive = new IMGArchive(gta3Img);
-                    imgArchive.open();
-                }
+                if (!gta3Img.exists()) gta3Img = new File(appStorageDir, "gta3.img");
+                if (gta3Img.exists()) imgArchive.addArchive(gta3Img);
+
+                File gtaIntImg = new File(gameDataDir, "texdb/gta_int.img");
+                if (!gtaIntImg.exists()) gtaIntImg = new File(appStorageDir, "gta_int.img");
+                if (gtaIntImg.exists()) imgArchive.addArchive(gtaIntImg);
 
                 // 5. Load default map (LAe.ipl)
                 File defaultIpl = new File(appStorageDir, "data/maps/LA/LAe.ipl");

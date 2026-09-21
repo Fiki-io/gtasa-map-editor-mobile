@@ -6,11 +6,13 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Reader for GTA SA IMG Version 2 archives (e.g. gta3.img, gta_int.img).
+ * Multi-archive reader for GTA SA IMG Version 2 archives (supports both gta3.img and gta_int.img).
  */
 public class IMGArchive implements AutoCloseable {
 
@@ -18,11 +20,13 @@ public class IMGArchive implements AutoCloseable {
         public final int offsetSectors;
         public final int sizeSectors;
         public final String name;
+        public final RandomAccessFile sourceRaf;
 
-        public Entry(int offsetSectors, int sizeSectors, String name) {
+        public Entry(int offsetSectors, int sizeSectors, String name, RandomAccessFile sourceRaf) {
             this.offsetSectors = offsetSectors;
             this.sizeSectors = sizeSectors;
             this.name = name;
+            this.sourceRaf = sourceRaf;
         }
 
         public long getByteOffset() {
@@ -34,21 +38,27 @@ public class IMGArchive implements AutoCloseable {
         }
     }
 
-    private final File imgFile;
-    private RandomAccessFile raf;
+    private final List<RandomAccessFile> openFiles = new ArrayList<>();
     private final Map<String, Entry> entryMap = new HashMap<>();
 
-    public IMGArchive(File imgFile) {
-        this.imgFile = imgFile;
+    public IMGArchive() {}
+
+    public IMGArchive(File... imgFiles) throws IOException {
+        for (File f : imgFiles) {
+            if (f != null && f.exists()) {
+                addArchive(f);
+            }
+        }
     }
 
-    public void open() throws IOException {
-        close();
+    public synchronized void addArchive(File imgFile) throws IOException {
         if (!imgFile.exists() || !imgFile.canRead()) {
-            throw new IOException("IMG file does not exist or cannot be read: " + imgFile.getAbsolutePath());
+            return;
         }
 
-        raf = new RandomAccessFile(imgFile, "r");
+        RandomAccessFile raf = new RandomAccessFile(imgFile, "r");
+        openFiles.add(raf);
+
         byte[] headerBytes = new byte[8];
         raf.readFully(headerBytes);
 
@@ -58,7 +68,9 @@ public class IMGArchive implements AutoCloseable {
         String magicStr = new String(magic, StandardCharsets.US_ASCII);
 
         if (!"VER2".equals(magicStr)) {
-            throw new IOException("Unsupported IMG version. Expected 'VER2', got: " + magicStr);
+            raf.close();
+            openFiles.remove(raf);
+            throw new IOException("Unsupported IMG version in " + imgFile.getName() + ": Expected 'VER2', got: " + magicStr);
         }
 
         int numEntries = headerBuf.getInt();
@@ -79,7 +91,7 @@ public class IMGArchive implements AutoCloseable {
                 nameLen++;
             }
             String name = new String(nameBytes, 0, nameLen, StandardCharsets.US_ASCII).toLowerCase();
-            entryMap.put(name, new Entry(offset, size, name));
+            entryMap.put(name, new Entry(offset, size, name, raf));
         }
     }
 
@@ -100,13 +112,15 @@ public class IMGArchive implements AutoCloseable {
     }
 
     public synchronized byte[] readEntry(Entry entry) throws IOException {
-        if (raf == null) {
-            throw new IOException("IMG archive is not open");
+        if (entry == null || entry.sourceRaf == null) {
+            return null;
         }
-        raf.seek(entry.getByteOffset());
-        byte[] buffer = new byte[entry.getByteSize()];
-        raf.readFully(buffer);
-        return buffer;
+        synchronized (entry.sourceRaf) {
+            entry.sourceRaf.seek(entry.getByteOffset());
+            byte[] buffer = new byte[entry.getByteSize()];
+            entry.sourceRaf.readFully(buffer);
+            return buffer;
+        }
     }
 
     public int getEntryCount() {
@@ -114,13 +128,13 @@ public class IMGArchive implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        if (raf != null) {
+    public synchronized void close() {
+        for (RandomAccessFile raf : openFiles) {
             try {
                 raf.close();
             } catch (IOException ignored) {}
-            raf = null;
         }
+        openFiles.clear();
         entryMap.clear();
     }
 }
