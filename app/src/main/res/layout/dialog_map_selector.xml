@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/surface_dark">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select GTA SA Map (IPL)"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/et_search_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Search map (e.g. LAe, SFn, vegas)..."
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary"
+        android:backgroundTint="@color/accent"
+        android:textSize="14sp" />
+
+    <ListView
+        android:id="@+id/lv_maps"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:divider="@color/surface_card"
+        android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/btn_open_custom_ipl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/surface_card"
+        android:text="Open Custom .IPL File..."
+        android:textColor="@color/accent" />
+
+</LinearLayout>

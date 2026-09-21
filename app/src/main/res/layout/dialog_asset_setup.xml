@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@color/surface_dark">
+
+    <TextView
+        android:id="@+id/tv_setup_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/asset_setup_title"
+        android:textColor="@color/text_primary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_setup_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/asset_setup_message"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp" />
+
+    <ProgressBar
+        android:id="@+id/pb_setup"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:layout_marginTop="16dp"
+        android:max="100"
+        android:progress="0" />
+
+    <TextView
+        android:id="@+id/tv_setup_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Ready to download"
+        android:textColor="@color/accent"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/btn_setup_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/primary"
+        android:text="Start Download"
+        android:textColor="@color/text_primary" />
+
+</LinearLayout>

@@ -1,0 +1,13 @@
+<resources>
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#0D47A1</color>
+    <color name="accent">#00E5FF</color>
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="surface_card">#2A2A2A</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0BEC5</color>
+    <color name="axis_x">#FF3B30</color>
+    <color name="axis_y">#4CD964</color>
+    <color name="axis_z">#007AFF</color>
+</resources>

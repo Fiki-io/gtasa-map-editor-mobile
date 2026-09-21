@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/surface_dark"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_inspector_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Object Inspector"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_inspector_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Model: veg_tree3 (ID: 1280)"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+        <!-- Position X -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Pos X:"
+                android:textColor="@color/axis_x"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/et_pos_x"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal|numberSigned"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <!-- Position Y -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Pos Y:"
+                android:textColor="@color/axis_y"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/et_pos_y"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal|numberSigned"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <!-- Position Z -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Pos Z:"
+                android:textColor="@color/axis_z"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/et_pos_z"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal|numberSigned"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <!-- Rotation Z -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="Rot Z:"
+                android:textColor="@color/text_secondary" />
+            <EditText
+                android:id="@+id/et_rot_z"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal|numberSigned"
+                android:textColor="@color/text_primary" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_inspector_apply"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/primary"
+            android:text="Apply Changes"
+            android:textColor="@color/text_primary" />
+
+    </LinearLayout>
+</ScrollView>

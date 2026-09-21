@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">GTA SA Map Editor</string>
+    <string name="btn_select_map">Select Map</string>
+    <string name="btn_add_object">Add Object</string>
+    <string name="btn_duplicate">Duplicate</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_inspector">Properties</string>
+    <string name="btn_save">Save IPL</string>
+    <string name="btn_radar">Radar</string>
+    <string name="btn_settings">Settings</string>
+    <string name="loading_map">Loading Map...</string>
+    <string name="saving_map">Saving IPL...</string>
+    <string name="map_saved_success">IPL saved successfully!</string>
+    <string name="object_selected">Selected: %1$s (ID: %2$d)</string>
+    <string name="no_object_selected">No object selected</string>
+    <string name="asset_setup_title">Asset Setup</string>
+    <string name="asset_setup_message">Essential assets (textures.tpk, mapa.png, data) are being prepared...</string>
+    <string name="download_progress">%1$s: %2$d%%</string>
+</resources>

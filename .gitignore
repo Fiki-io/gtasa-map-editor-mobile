@@ -1,0 +1,21 @@
+# Gradle and Android build
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+
+# Local configuration
+local.properties
+.idea/
+*.iml
+.DS_Store
+
+# Temporary scratch and extraction folders
+/extracted/
+/decompiled/
+/tools/
+/assets_download/
+/assets_extracted/
+/scratch/
+*.xapk
