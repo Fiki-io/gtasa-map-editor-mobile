@@ -17,7 +17,6 @@ public class MapGLSurfaceView extends GLSurfaceView {
     private float lastTouchX;
     private float lastTouchY;
     private float touchStartX;
-    private touchStartY;
     private float touchStartYVal;
     private boolean isDraggingGizmo = false;
 
