@@ -41,6 +41,15 @@
                 android:textSize="12sp" />
 
             <Button
+                android:id="@+id/btn_import_img"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/btn_import_img"
+                android:textColor="@color/accent"
+                android:textSize="12sp" />
+
+            <Button
                 android:id="@+id/btn_add_object"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"

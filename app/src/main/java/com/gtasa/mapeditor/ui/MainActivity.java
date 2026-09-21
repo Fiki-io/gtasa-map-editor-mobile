@@ -24,6 +24,7 @@ import com.gtasa.mapeditor.render.MapGLSurfaceView;
 import com.gtasa.mapeditor.render.MapRenderer;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
@@ -34,7 +35,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_PICK_IPL = 101;
-    private static final int REQUEST_PICK_IMG = 102;
+    private static final int REQUEST_PICK_IMG_GTA3 = 102;
+    private static final int REQUEST_PICK_IMG_INT = 103;
 
     private MapGLSurfaceView glSurfaceView;
     private MapRenderer renderer;
@@ -199,12 +201,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupToolbarButtons() {
         Button btnSelectMap = findViewById(R.id.btn_map_select);
+        Button btnImportImg = findViewById(R.id.btn_import_img);
         Button btnAddObject = findViewById(R.id.btn_add_object);
         Button btnDuplicate = findViewById(R.id.btn_duplicate);
         Button btnDelete = findViewById(R.id.btn_delete);
         Button btnInspector = findViewById(R.id.btn_inspector);
         Button btnToggleRadar = findViewById(R.id.btn_toggle_radar);
         Button btnSave = findViewById(R.id.btn_save);
+
+        btnImportImg.setOnClickListener(v -> showImportImgDialog());
 
         btnSelectMap.setOnClickListener(v -> {
             MapSelectorDialog.show(this, datParser.getIplEntries(), new File(appStorageDir, "data/maps"), (entry, customFile) -> {
@@ -326,6 +331,55 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
+    private void showImportImgDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Import GTA 3D Models (.img)");
+        String[] options = {
+                "Select gta3.img (Exterior models)",
+                "Select gta_int.img (Interior models)",
+                "Auto-detect from GTA SA folder"
+        };
+        builder.setItems(options, (dialog, which) -> {
+            if (which == 0) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                startActivityForResult(intent, REQUEST_PICK_IMG_GTA3);
+            } else if (which == 1) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("*/*");
+                startActivityForResult(intent, REQUEST_PICK_IMG_INT);
+            } else if (which == 2) {
+                autoDetectAndLoadImg();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    private void autoDetectAndLoadImg() {
+        int countBefore = (imgArchive != null) ? imgArchive.getEntryCount() : 0;
+        if (imgArchive == null) imgArchive = new IMGArchive();
+
+        File gta3 = new File(gameDataDir, "texdb/gta3.img");
+        if (gta3.exists()) {
+            try { imgArchive.addArchive(gta3); } catch (Exception ignored) {}
+        }
+        File gtaInt = new File(gameDataDir, "texdb/gta_int.img");
+        if (gtaInt.exists()) {
+            try { imgArchive.addArchive(gtaInt); } catch (Exception ignored) {}
+        }
+
+        renderer.setDataSources(iplParser, ideParser, imgArchive, texturePackReader);
+        int added = imgArchive.getEntryCount() - countBefore;
+        if (added > 0) {
+            Toast.makeText(this, "Found " + added + " models from GTA SA folder!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "No .img files found in game folder. Please use 'Select gta3.img' option.", Toast.LENGTH_LONG).show();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -340,6 +394,35 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     Toast.makeText(this, "Failed to load custom IPL: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
+            } else if (requestCode == REQUEST_PICK_IMG_GTA3 || requestCode == REQUEST_PICK_IMG_INT) {
+                boolean isInt = (requestCode == REQUEST_PICK_IMG_INT);
+                String fileName = isInt ? "gta_int.img" : "gta3.img";
+                File destFile = new File(appStorageDir, fileName);
+
+                Toast.makeText(this, "Importing " + fileName + "... Please wait.", Toast.LENGTH_SHORT).show();
+                new Thread(() -> {
+                    try {
+                        InputStream in = getContentResolver().openInputStream(uri);
+                        FileOutputStream out = new FileOutputStream(destFile);
+                        byte[] buf = new byte[16384];
+                        int len;
+                        while ((len = in.read(buf)) != -1) {
+                            out.write(buf, 0, len);
+                        }
+                        in.close();
+                        out.close();
+
+                        if (imgArchive == null) {
+                            imgArchive = new IMGArchive();
+                        }
+                        imgArchive.addArchive(destFile);
+                        renderer.setDataSources(iplParser, ideParser, imgArchive, texturePackReader);
+
+                        runOnUiThread(() -> Toast.makeText(this, fileName + " imported successfully! Models ready: " + imgArchive.getEntryCount(), Toast.LENGTH_LONG).show());
+                    } catch (Exception e) {
+                        runOnUiThread(() -> Toast.makeText(this, "Failed to import " + fileName + ": " + e.getMessage(), Toast.LENGTH_LONG).show());
+                    }
+                }).start();
             }
         }
     }

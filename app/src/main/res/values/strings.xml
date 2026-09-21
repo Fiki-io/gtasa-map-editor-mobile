@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GTA SA Map Editor</string>
     <string name="btn_select_map">Select Map</string>
+    <string name="btn_import_img">Import IMG</string>
     <string name="btn_add_object">Add Object</string>
     <string name="btn_duplicate">Duplicate</string>
     <string name="btn_delete">Delete</string>
